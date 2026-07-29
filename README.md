@@ -1,24 +1,70 @@
-# 阿根廷五人桌面宠物
+# Argentina Player Desktop Pets
 
-双击 `start-five-pets.cmd`，梅西、恩佐、罗梅罗、利桑德罗·马丁内斯和帕雷德斯会同时出现在桌面上。
+> Unofficial, non-commercial fan-made desktop animation project for Windows.
 
-功能：
+Animated desktop companions inspired by five Argentine football players:
 
-- 五个独立宠物同时运行，不需要在 Codex 中逐个切换。
-- 自动分散并相互避让，尽量不重叠。
-- 碰到屏幕边缘或普通窗口边缘时转向。
-- 随机爬行、玩耍、挥手和跳跃。
-- 梅西碰到其他开启的球员时，会弹出“给你俩窝窝”对白气泡。
-- 悬浮层不拦截鼠标，可以正常操作下面的窗口。
+- Lionel Messi
+- Enzo Fernández (included but disabled by default)
+- Cristian Romero
+- Lisandro Martínez
+- Leandro Paredes
 
-控制：
+This project is not affiliated with, endorsed by, sponsored by, or officially
+connected to any featured player, the Argentine Football Association (AFA),
+FIFA, any football club, or any commercial sponsor.
 
-- 在 Windows 系统托盘找到程序图标。
-- `Players`：单独开启或关闭任意球员；当前默认关闭恩佐。
-- `Manual Controller...`：打开手动控制器，选择一名球员后使用方向键或 `W/A/S/D` 移动，空格键触发玩耍。
-- `Pause / Resume`：暂停或继续。
-- `Scatter Now`：立即重新散开。
-- `Exit`：退出全部五个宠物。
-- 也可以双击 `stop-five-pets.cmd` 强制关闭。
+## Features
 
-程序文件位于 `dist\ArgentinaFivePets.exe`，旁边的 `dist\assets` 文件夹必须保留。
+- Independent movement with automatic separation and collision avoidance
+- Screen-edge and ordinary-window obstacle handling
+- Manual control for one selected character using arrow keys or `W/A/S/D`
+- Individual visibility controls from the system tray
+- Chinese and Spanish speech options for Messi's collision bubble:
+  - 中文：`给你俩窝窝`
+  - Español: `¿Qué mirás, bobo?`
+- Transparent, always-on-top overlay that does not block normal mouse input
+
+## Run
+
+Download the latest ZIP from the repository's **Releases** page, extract the
+archive, and double-click `start-five-pets.cmd`.
+
+The `dist\assets` folder must remain next to `dist\ArgentinaFivePets.exe`.
+
+## Controls
+
+Right-click the program icon in the Windows system tray:
+
+- `Manual Controller...` — select and manually move a character
+- `Players` — enable or disable each character
+- `Language / 语言` — choose `中文` or `Español`
+- `Pause / Resume` — pause or resume movement
+- `Scatter Now` — immediately separate the active characters
+- `Exit` — close the overlay
+
+## Build
+
+Run `build.ps1` on Windows. The script uses the C# compiler included with the
+Windows .NET Framework and copies the required assets into `dist`.
+
+## Legal and rights notice
+
+Please read [LEGAL.md](LEGAL.md) before downloading, redistributing, modifying,
+or publishing this project.
+
+The source repository is provided for transparency and personal evaluation.
+No license is granted for commercial exploitation of any featured name,
+likeness, visual asset, trade dress, trademark, or other third-party right.
+
+## 中文说明
+
+这是一个非官方、非商业的 Windows 球迷桌宠项目，与相关球员、阿根廷足协、
+FIFA、任何俱乐部或赞助商均无隶属、授权、代言或合作关系。
+
+托盘菜单中的 `Language / 语言` 可以切换梅西碰撞气泡：
+
+- 中文：`给你俩窝窝`
+- 西班牙语：`¿Qué mirás, bobo?`
+
+公开、转载、修改或分发前请阅读 [LEGAL.md](LEGAL.md)。

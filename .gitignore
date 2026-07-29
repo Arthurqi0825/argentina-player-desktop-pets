@@ -11,3 +11,6 @@ obj/
 # Windows 临时文件
 Thumbs.db
 Desktop.ini
+
+# Local release archives are uploaded through GitHub Releases
+*.zip

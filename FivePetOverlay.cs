@@ -60,6 +60,7 @@ namespace ArgentinaFivePets
         private float obstacleRefreshRemaining;
         private float messiSpeechRemaining;
         private float messiSpeechCooldown;
+        private bool useSpanishSpeech;
         private bool paused;
 
         public PetOverlayForm()
@@ -97,6 +98,24 @@ namespace ArgentinaFivePets
                 };
                 playersMenu.DropDownItems.Add(playerItem);
             }
+            ToolStripMenuItem languageMenu = new ToolStripMenuItem("Language / 语言");
+            ToolStripMenuItem chineseLanguageItem = new ToolStripMenuItem("中文");
+            ToolStripMenuItem spanishLanguageItem = new ToolStripMenuItem("Español");
+            chineseLanguageItem.Checked = true;
+            chineseLanguageItem.Click += delegate
+            {
+                useSpanishSpeech = false;
+                chineseLanguageItem.Checked = true;
+                spanishLanguageItem.Checked = false;
+            };
+            spanishLanguageItem.Click += delegate
+            {
+                useSpanishSpeech = true;
+                chineseLanguageItem.Checked = false;
+                spanishLanguageItem.Checked = true;
+            };
+            languageMenu.DropDownItems.Add(chineseLanguageItem);
+            languageMenu.DropDownItems.Add(spanishLanguageItem);
             ToolStripMenuItem pauseItem = new ToolStripMenuItem("Pause / Resume");
             pauseItem.Click += delegate { paused = !paused; };
             ToolStripMenuItem controlItem = new ToolStripMenuItem("Manual Controller...");
@@ -107,6 +126,7 @@ namespace ArgentinaFivePets
             exitItem.Click += delegate { Close(); };
             menu.Items.Add(controlItem);
             menu.Items.Add(playersMenu);
+            menu.Items.Add(languageMenu);
             menu.Items.Add(pauseItem);
             menu.Items.Add(scatterItem);
             menu.Items.Add(new ToolStripSeparator());
@@ -328,7 +348,8 @@ namespace ArgentinaFivePets
 
                 format.Alignment = StringAlignment.Center;
                 format.LineAlignment = StringAlignment.Center;
-                graphics.DrawString("给你俩窝窝", speechFont, textBrush, bubble, format);
+                string speechText = useSpanishSpeech ? "¿Qué mirás, bobo?" : "给你俩窝窝";
+                graphics.DrawString(speechText, speechFont, textBrush, bubble, format);
             }
         }
 
