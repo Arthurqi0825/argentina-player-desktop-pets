@@ -1,3 +1,5 @@
+.DS_Store
+.build/
 # 编译结果，改用 GitHub Releases 发布
 dist/
 

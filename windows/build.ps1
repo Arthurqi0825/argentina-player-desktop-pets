@@ -1,6 +1,7 @@
 $ErrorActionPreference = "Stop"
 
 $projectDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
+$repositoryDirectory = Split-Path -Parent $projectDirectory
 $compiler = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
 if (-not (Test-Path -LiteralPath $compiler)) {
     $compiler = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\csc.exe"
@@ -12,11 +13,11 @@ if (-not (Test-Path -LiteralPath $compiler)) {
 $distributionDirectory = Join-Path $projectDirectory "dist"
 $distributionAssets = Join-Path $distributionDirectory "assets"
 New-Item -ItemType Directory -Force -Path $distributionDirectory, $distributionAssets | Out-Null
-Copy-Item -LiteralPath (Join-Path $projectDirectory "assets\messi.png") -Destination $distributionAssets -Force
-Copy-Item -LiteralPath (Join-Path $projectDirectory "assets\enzo.png") -Destination $distributionAssets -Force
-Copy-Item -LiteralPath (Join-Path $projectDirectory "assets\romero.png") -Destination $distributionAssets -Force
-Copy-Item -LiteralPath (Join-Path $projectDirectory "assets\lisandro.png") -Destination $distributionAssets -Force
-Copy-Item -LiteralPath (Join-Path $projectDirectory "assets\paredes.png") -Destination $distributionAssets -Force
+Copy-Item -LiteralPath (Join-Path $repositoryDirectory "assets\messi.png") -Destination $distributionAssets -Force
+Copy-Item -LiteralPath (Join-Path $repositoryDirectory "assets\enzo.png") -Destination $distributionAssets -Force
+Copy-Item -LiteralPath (Join-Path $repositoryDirectory "assets\romero.png") -Destination $distributionAssets -Force
+Copy-Item -LiteralPath (Join-Path $repositoryDirectory "assets\lisandro.png") -Destination $distributionAssets -Force
+Copy-Item -LiteralPath (Join-Path $repositoryDirectory "assets\paredes.png") -Destination $distributionAssets -Force
 
 & $compiler `
     /nologo `

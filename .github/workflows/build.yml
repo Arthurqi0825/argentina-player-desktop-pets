@@ -1,0 +1,52 @@
+name: Build desktop pets
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  macos:
+    name: macOS universal app
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run macOS core tests
+        run: macos/test-macos.sh
+      - name: Build macOS app
+        run: macos/build-macos.sh
+      - name: Run macOS integration self-test
+        run: '"dist/macos/Argentina Five Pets.app/Contents/MacOS/ArgentinaFivePets" --self-test'
+      - name: Verify universal binary
+        run: |
+          lipo "dist/macos/Argentina Five Pets.app/Contents/MacOS/ArgentinaFivePets" \
+            -verify_arch arm64 x86_64
+      - name: Verify app signature
+        run: codesign --verify --deep --strict "dist/macos/Argentina Five Pets.app"
+      - name: Upload macOS package
+        uses: actions/upload-artifact@v4
+        with:
+          name: Argentina-Five-Pets-macOS
+          path: dist/macos/Argentina-Five-Pets-macOS.zip
+
+  windows:
+    name: Windows app
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Windows app
+        shell: powershell
+        run: windows/build.ps1
+      - name: Copy launcher scripts
+        shell: powershell
+        run: |
+          Copy-Item windows/start-five-pets.cmd windows/dist/
+          Copy-Item windows/stop-five-pets.cmd windows/dist/
+      - name: Upload Windows package
+        uses: actions/upload-artifact@v4
+        with:
+          name: Argentina-Five-Pets-Windows
+          path: windows/dist
