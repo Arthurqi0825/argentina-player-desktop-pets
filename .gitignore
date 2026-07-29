@@ -14,3 +14,7 @@ Desktop.ini
 
 # Local release archives are uploaded through GitHub Releases
 *.zip
+
+# Generated source backdrop and visual-QA contact sheet
+media/promo-background-source.png
+media/demo-contact-sheet.jpg

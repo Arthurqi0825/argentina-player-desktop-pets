@@ -81,7 +81,6 @@ namespace ArgentinaFivePets
                      ControlStyles.SupportsTransparentBackColor, true);
 
             LoadPets();
-            pets[1].Enabled = false;
             ScatterPets();
 
             ContextMenuStrip menu = new ContextMenuStrip();

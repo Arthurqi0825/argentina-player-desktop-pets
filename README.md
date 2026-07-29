@@ -2,10 +2,12 @@
 
 > Unofficial, non-commercial fan-made desktop animation project for Windows.
 
+![Five-pet animated demo](media/desktop-pets-demo.gif)
+
 Animated desktop companions inspired by five Argentine football players:
 
 - Lionel Messi
-- Enzo Fernández (included but disabled by default)
+- Enzo Fernández
 - Cristian Romero
 - Lisandro Martínez
 - Leandro Paredes
