@@ -69,6 +69,52 @@ To stop it without opening the menu, run `macos/stop-five-pets.command`.
 Keep the `assets` folder next to `ArgentinaFivePets.exe`. Double-click
 `stop-five-pets.cmd` for the one-click stop command.
 
+## How to use / 使用指南
+
+### macOS
+
+1. Launch `Argentina Five Pets.app`. The app runs from the menu bar and does
+   not open a normal Dock window.
+2. Find the paw icon in the macOS menu bar. Left-click or right-click it to
+   open the complete control menu.
+3. Select `Pet Dashboard… / 角色面板…` for frequent character changes. The
+   dashboard stays open after a switch is clicked, so several players can be
+   enabled or disabled without reopening the menu.
+4. To display only one player, click `Stop All`, then enable the required
+   player in the dashboard. The compact `Players / 单独角色` submenu can also
+   toggle one player at a time.
+5. Use `Start 5 Pets / 启动 5 个桌宠` as the one-click master switch. It stops
+   all active pets when they are running and starts all five again when they
+   are stopped.
+6. Choose `Exit` to quit normally. If the menu is unavailable, run
+   `macos/stop-five-pets.command`.
+
+If the menu-bar icon is not visible, check the hidden menu-bar items or close
+other menu-bar apps temporarily. On the first launch of a downloaded,
+non-notarized build, Control-click the app in Finder, choose **Open**, and
+confirm once.
+
+### Windows
+
+1. Extract the complete Windows ZIP. Do not move
+   `ArgentinaFivePets.exe` away from its adjacent `assets` folder.
+2. Double-click `start-five-pets.cmd`. The app runs in the notification area
+   instead of opening a normal taskbar window.
+3. Find the paw icon in the Windows system tray. It may be inside the
+   **Show hidden icons** (`^`) panel. Left-click or right-click the paw to open
+   the complete menu.
+4. Open `Pet Dashboard… / 角色面板…` to keep the selector visible while
+   changing several players.
+5. To display only one player, click `Stop All`, then enable that player.
+   `Players / 单独角色` remains available as the compact per-player submenu.
+6. Use `Start 5 Pets / 启动 5 个桌宠` to stop or restart all five pets with one
+   action.
+7. Choose `Exit` to quit normally, or double-click `stop-five-pets.cmd` if the
+   tray icon cannot be reached.
+
+Run only one copy of the app. Starting it again while it is already running
+will not create a second group of pets.
+
 ## Controls
 
 The paw menu is available from the macOS menu bar or Windows system tray:
@@ -153,5 +199,28 @@ macOS 版本是原生菜单栏应用，Windows 版本是原生托盘应用。两
 桌宠、`Start 5 Pets` 一键总开关、五名球员分别开关、右键完整菜单、手动控制、
 暂停、散开、窗口避障及中西双语气泡。macOS 还提供常驻的 `Pet Dashboard`
 角色面板，可连续切换多名球员，不会在每次点击后自动关闭。
+
+### macOS 使用
+
+1. 解压后将 `Argentina Five Pets.app` 移入“应用程序”并启动。
+2. 点击或右键菜单栏中的爪印图标打开完整菜单。
+3. 打开 `Pet Dashboard… / 角色面板…`，即可连续开关多个角色。
+4. 如果只想显示一名球员，先点 `Stop All`，再单独开启目标角色。
+5. `Start 5 Pets / 启动 5 个桌宠` 可以一键停止或重新启动全部角色。
+6. 使用 `Exit` 正常退出；菜单无法打开时，可运行
+   `macos/stop-five-pets.command`。
+
+首次启动若被 macOS 拦截，请在 Finder 中按住 Control 点击应用，选择“打开”
+并确认一次。
+
+### Windows 使用
+
+1. 完整解压 Windows ZIP，保持 `ArgentinaFivePets.exe` 与 `assets` 文件夹相邻。
+2. 双击 `start-five-pets.cmd` 启动。
+3. 点击或右键系统托盘中的爪印图标；如果没有看到，请展开隐藏图标区域。
+4. 使用 `Pet Dashboard… / 角色面板…` 连续切换角色。只显示一名球员时，
+   先点 `Stop All`，再开启目标角色。
+5. `Start 5 Pets / 启动 5 个桌宠` 是全部角色的一键总开关。
+6. 使用 `Exit` 正常退出；托盘菜单不可用时，双击 `stop-five-pets.cmd`。
 
 公开、转载、修改或分发前请阅读 [LEGAL.md](LEGAL.md)。
