@@ -789,6 +789,7 @@ static NSRect AFDesktopBounds(void)
 
 @property(nonatomic) AFEngine *engine;
 @property(nonatomic) NSStatusItem *statusItem;
+@property(nonatomic) NSMenu *controlMenu;
 @property(nonatomic) NSMutableArray<NSWindow *> *overlayWindows;
 @property(nonatomic) NSMutableArray<AFOverlayView *> *overlayViews;
 @property(nonatomic) NSTimer *timer;
@@ -862,9 +863,20 @@ static NSRect AFDesktopBounds(void)
     } else {
         self.statusItem.button.title = @"🐾";
     }
-    NSMenu *menu = [[NSMenu alloc] init];
-    menu.delegate = self;
-    self.statusItem.menu = menu;
+    self.controlMenu = [[NSMenu alloc] init];
+    self.controlMenu.delegate = self;
+    self.statusItem.button.target = self;
+    self.statusItem.button.action = @selector(showStatusMenu:);
+    [self.statusItem.button sendActionOn:NSEventMaskLeftMouseUp | NSEventMaskRightMouseUp];
+}
+
+- (void)showStatusMenu:(id)sender
+{
+    [self menuNeedsUpdate:self.controlMenu];
+    NSStatusBarButton *button = self.statusItem.button;
+    [self.controlMenu popUpMenuPositioningItem:nil
+                                    atLocation:NSMakePoint(0, NSHeight(button.bounds))
+                                        inView:button];
 }
 
 - (void)menuNeedsUpdate:(NSMenu *)menu
@@ -1071,7 +1083,7 @@ static int AFRunIntegrationSelfTest(void)
     AFAppDelegate *delegate = [[AFAppDelegate alloc] init];
     delegate.engine = engine;
     [delegate configureStatusItem];
-    NSMenu *menu = delegate.statusItem.menu;
+    NSMenu *menu = delegate.controlMenu;
     [delegate menuNeedsUpdate:menu];
     if (!AFRequire(menu.numberOfItems == 8, @"The status menu has an unexpected item count.")) return 1;
     if (!AFRequire([menu.itemArray.firstObject.title hasPrefix:@"Start 5 Pets"],
