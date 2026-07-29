@@ -1,0 +1,13 @@
+# 编译结果，改用 GitHub Releases 发布
+dist/
+
+# Visual Studio / .NET 临时文件
+bin/
+obj/
+.vs/
+*.pdb
+*.log
+
+# Windows 临时文件
+Thumbs.db
+Desktop.ini
