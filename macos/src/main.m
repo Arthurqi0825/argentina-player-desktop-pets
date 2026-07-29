@@ -782,6 +782,184 @@ static NSRect AFDesktopBounds(void)
 
 @end
 
+@interface AFPetDashboard : NSWindowController
+
+- (instancetype)initWithEngine:(AFEngine *)engine
+                  changeHandler:(dispatch_block_t)changeHandler;
+- (void)show;
+- (void)refresh;
+- (void)closeCompletely;
+
+@end
+
+@interface AFPetDashboard ()
+
+@property(nonatomic) AFEngine *engine;
+@property(nonatomic) NSButton *masterButton;
+@property(nonatomic) NSTextField *summaryLabel;
+@property(nonatomic) NSArray<NSButton *> *playerButtons;
+@property(nonatomic, copy) dispatch_block_t changeHandler;
+
+@end
+
+@implementation AFPetDashboard
+
+- (instancetype)initWithEngine:(AFEngine *)engine
+                  changeHandler:(dispatch_block_t)changeHandler
+{
+    NSPanel *panel = [[NSPanel alloc] initWithContentRect:NSMakeRect(0, 0, 360, 350)
+                                                styleMask:NSWindowStyleMaskTitled |
+                                                          NSWindowStyleMaskClosable |
+                                                          NSWindowStyleMaskUtilityWindow
+                                                  backing:NSBackingStoreBuffered
+                                                    defer:NO];
+    self = [super initWithWindow:panel];
+    if (!self) return nil;
+
+    self.engine = engine;
+    self.changeHandler = changeHandler;
+    panel.title = @"Pet Dashboard / 角色面板";
+    panel.floatingPanel = YES;
+    panel.level = NSFloatingWindowLevel;
+    panel.hidesOnDeactivate = NO;
+    panel.releasedWhenClosed = NO;
+
+    NSView *content = [[NSView alloc] initWithFrame:panel.contentView.bounds];
+    panel.contentView = content;
+
+    NSTextField *help = [NSTextField labelWithString:
+                         @"Switch players without reopening the menu."];
+    help.textColor = NSColor.secondaryLabelColor;
+    help.frame = NSMakeRect(20, 312, 320, 20);
+    [content addSubview:help];
+
+    self.masterButton = [NSButton buttonWithTitle:@"Start 5 Pets / 启动全部"
+                                           target:self
+                                           action:@selector(masterChanged:)];
+    self.masterButton.frame = NSMakeRect(20, 274, 210, 24);
+    [self.masterButton setButtonType:NSButtonTypeSwitch];
+    self.masterButton.allowsMixedState = YES;
+    [content addSubview:self.masterButton];
+
+    self.summaryLabel = [NSTextField labelWithString:@""];
+    self.summaryLabel.alignment = NSTextAlignmentRight;
+    self.summaryLabel.textColor = NSColor.secondaryLabelColor;
+    self.summaryLabel.frame = NSMakeRect(238, 278, 102, 18);
+    [content addSubview:self.summaryLabel];
+
+    NSBox *separator = [[NSBox alloc] initWithFrame:NSMakeRect(20, 257, 320, 1)];
+    separator.boxType = NSBoxSeparator;
+    [content addSubview:separator];
+
+    NSMutableArray<NSButton *> *playerButtons = [NSMutableArray array];
+    CGFloat playerY = 222;
+    for (NSUInteger index = 0; index < ArgentinaPetNames().count; index++) {
+        NSButton *button = [NSButton buttonWithTitle:ArgentinaPetNames()[index]
+                                             target:self
+                                             action:@selector(playerChanged:)];
+        button.frame = NSMakeRect(28, playerY, 300, 26);
+        button.tag = (NSInteger)index;
+        [button setButtonType:NSButtonTypeSwitch];
+        [content addSubview:button];
+        [playerButtons addObject:button];
+        playerY -= 36;
+    }
+    self.playerButtons = playerButtons;
+
+    NSButton *startAll = [NSButton buttonWithTitle:@"Start All"
+                                            target:self
+                                            action:@selector(startAll:)];
+    startAll.frame = NSMakeRect(20, 20, 96, 32);
+    [content addSubview:startAll];
+    NSButton *stopAll = [NSButton buttonWithTitle:@"Stop All"
+                                           target:self
+                                           action:@selector(stopAll:)];
+    stopAll.frame = NSMakeRect(132, 20, 96, 32);
+    [content addSubview:stopAll];
+    NSButton *scatter = [NSButton buttonWithTitle:@"Scatter"
+                                           target:self
+                                           action:@selector(scatter:)];
+    scatter.frame = NSMakeRect(244, 20, 96, 32);
+    [content addSubview:scatter];
+
+    [self refresh];
+    return self;
+}
+
+- (void)show
+{
+    [self refresh];
+    [self.window center];
+    [NSApp activateIgnoringOtherApps:YES];
+    [self.window makeKeyAndOrderFront:nil];
+}
+
+- (void)refresh
+{
+    NSUInteger enabledCount = 0;
+    for (NSUInteger index = 0; index < self.engine.pets.count; index++) {
+        AFPet *pet = self.engine.pets[index];
+        if (pet.enabled) enabledCount++;
+        if (index < self.playerButtons.count) {
+            self.playerButtons[index].state = pet.enabled
+                ? NSControlStateValueOn
+                : NSControlStateValueOff;
+        }
+    }
+    if (enabledCount == self.engine.pets.count) {
+        self.masterButton.state = NSControlStateValueOn;
+    } else if (enabledCount == 0) {
+        self.masterButton.state = NSControlStateValueOff;
+    } else {
+        self.masterButton.state = NSControlStateValueMixed;
+    }
+    self.summaryLabel.stringValue = [NSString stringWithFormat:@"%lu / %lu active",
+                                     (unsigned long)enabledCount,
+                                     (unsigned long)self.engine.pets.count];
+}
+
+- (void)closeCompletely
+{
+    [self close];
+}
+
+- (void)masterChanged:(NSButton *)sender
+{
+    [self.engine setAllPetsEnabled:sender.state == NSControlStateValueOn];
+    [self refresh];
+    if (self.changeHandler) self.changeHandler();
+}
+
+- (void)playerChanged:(NSButton *)sender
+{
+    [self.engine setPetEnabled:sender.state == NSControlStateValueOn atIndex:sender.tag];
+    [self refresh];
+    if (self.changeHandler) self.changeHandler();
+}
+
+- (void)startAll:(id)sender
+{
+    [self.engine setAllPetsEnabled:YES];
+    [self refresh];
+    if (self.changeHandler) self.changeHandler();
+}
+
+- (void)stopAll:(id)sender
+{
+    [self.engine setAllPetsEnabled:NO];
+    [self refresh];
+    if (self.changeHandler) self.changeHandler();
+}
+
+- (void)scatter:(id)sender
+{
+    [self.engine scatterPets];
+    [self refresh];
+    if (self.changeHandler) self.changeHandler();
+}
+
+@end
+
 @interface AFAppDelegate : NSObject <NSApplicationDelegate, NSMenuDelegate>
 @end
 
@@ -795,6 +973,7 @@ static NSRect AFDesktopBounds(void)
 @property(nonatomic) NSTimer *timer;
 @property(nonatomic) NSTimeInterval previousTick;
 @property(nonatomic) AFManualController *controller;
+@property(nonatomic) AFPetDashboard *dashboard;
 @property(nonatomic) int lockFileDescriptor;
 
 @end
@@ -840,12 +1019,16 @@ static NSRect AFDesktopBounds(void)
                                       userInfo:nil
                                        repeats:YES];
     [NSRunLoop.mainRunLoop addTimer:self.timer forMode:NSRunLoopCommonModes];
+    if ([NSProcessInfo.processInfo.arguments containsObject:@"--show-dashboard"]) {
+        [self showDashboard:nil];
+    }
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification
 {
     [self.timer invalidate];
     [self.controller closeCompletely];
+    [self.dashboard closeCompletely];
     for (NSWindow *window in self.overlayWindows) [window close];
     if (self.lockFileDescriptor >= 0) {
         flock(self.lockFileDescriptor, LOCK_UN);
@@ -888,6 +1071,12 @@ static NSRect AFDesktopBounds(void)
     master.target = self;
     master.state = self.engine.allPetsEnabled ? NSControlStateValueOn : NSControlStateValueOff;
     [menu addItem:master];
+
+    NSMenuItem *dashboardItem = [[NSMenuItem alloc] initWithTitle:@"Pet Dashboard… / 角色面板…"
+                                                          action:@selector(showDashboard:)
+                                                   keyEquivalent:@"d"];
+    dashboardItem.target = self;
+    [menu addItem:dashboardItem];
 
     NSMenuItem *playersItem = [[NSMenuItem alloc] initWithTitle:@"Players / 单独角色"
                                                         action:nil
@@ -952,6 +1141,7 @@ static NSRect AFDesktopBounds(void)
 - (void)toggleAllPets:(id)sender
 {
     [self.engine setAllPetsEnabled:!self.engine.allPetsEnabled];
+    [self.dashboard refresh];
     [self markOverlaysForDisplay];
 }
 
@@ -959,6 +1149,7 @@ static NSRect AFDesktopBounds(void)
 {
     AFPet *pet = self.engine.pets[(NSUInteger)sender.tag];
     [self.engine setPetEnabled:!pet.enabled atIndex:sender.tag];
+    [self.dashboard refresh];
     [self markOverlaysForDisplay];
 }
 
@@ -972,9 +1163,22 @@ static NSRect AFDesktopBounds(void)
     [self.controller show];
 }
 
+- (void)showDashboard:(id)sender
+{
+    if (!self.dashboard) {
+        __weak typeof(self) weakSelf = self;
+        self.dashboard = [[AFPetDashboard alloc] initWithEngine:self.engine
+                                                 changeHandler:^{
+            [weakSelf markOverlaysForDisplay];
+        }];
+    }
+    [self.dashboard show];
+}
+
 - (void)scatterPets:(id)sender
 {
     [self.engine scatterPets];
+    [self.dashboard refresh];
     [self markOverlaysForDisplay];
 }
 
@@ -1085,18 +1289,32 @@ static int AFRunIntegrationSelfTest(void)
     [delegate configureStatusItem];
     NSMenu *menu = delegate.controlMenu;
     [delegate menuNeedsUpdate:menu];
-    if (!AFRequire(menu.numberOfItems == 8, @"The status menu has an unexpected item count.")) return 1;
+    if (!AFRequire(menu.numberOfItems == 9, @"The status menu has an unexpected item count.")) return 1;
     if (!AFRequire([menu.itemArray.firstObject.title hasPrefix:@"Start 5 Pets"],
                    @"The master Start 5 Pets item is missing.")) return 1;
-    NSMenuItem *playersItem = menu.itemArray[1];
+    if (!AFRequire([menu.itemArray[1].title hasPrefix:@"Pet Dashboard"],
+                   @"The persistent Pet Dashboard item is missing.")) return 1;
+    NSMenuItem *playersItem = menu.itemArray[2];
     if (!AFRequire(playersItem.submenu.numberOfItems == 5, @"The Players menu must contain five roles.")) return 1;
     NSArray<NSString *> *menuNames = [playersItem.submenu.itemArray valueForKey:@"title"];
     if (!AFRequire([menuNames isEqualToArray:ArgentinaPetNames()],
                    @"The Players menu roster is incorrect.")) return 1;
-    if (!AFRequire([menu.itemArray[3].title isEqualToString:@"Pause / Resume"],
+    if (!AFRequire([menu.itemArray[4].title isEqualToString:@"Pause / Resume"],
                    @"Pause / Resume is missing from the status menu.")) return 1;
-    if (!AFRequire([menu.itemArray[4].title isEqualToString:@"Manual Controller…"],
+    if (!AFRequire([menu.itemArray[5].title isEqualToString:@"Manual Controller…"],
                    @"Manual Controller is missing from the status menu.")) return 1;
+
+    __block BOOL dashboardChanged = NO;
+    AFPetDashboard *dashboard = [[AFPetDashboard alloc] initWithEngine:engine
+                                                         changeHandler:^{
+        dashboardChanged = YES;
+    }];
+    if (!AFRequire(dashboard.playerButtons.count == 5,
+                   @"The dashboard must contain five persistent player switches.")) return 1;
+    BOOL messiWasEnabled = engine.pets[0].enabled;
+    [dashboard.playerButtons[0] performClick:nil];
+    if (!AFRequire(engine.pets[0].enabled != messiWasEnabled && dashboardChanged,
+                   @"The dashboard player switch did not update the engine.")) return 1;
 
     fprintf(stdout, "ArgentinaFivePets integration self-test: all checks passed.\n");
     return 0;

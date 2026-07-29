@@ -32,6 +32,7 @@ animation behavior. Platform-specific source and scripts live in
 - Five pets enabled by default
 - One-click `Start 5 Pets` master switch to stop or restart all five pets
 - Individual visibility switch for every player
+- Persistent `Pet Dashboard` for changing several players without reopening menus
 - Click or right-click the paw icon for the complete control menu
 - Independent movement, automatic separation, and collision avoidance
 - Screen-edge and ordinary-window obstacle handling
@@ -74,8 +75,11 @@ The paw menu is available from the macOS menu bar or Windows system tray:
 
 - `Start 5 Pets / 启动 5 个桌宠` — checked means all five are running; select
   it to stop all five, then select it again to restart all five
+- `Pet Dashboard… / 角色面板…` — open a persistent floating panel and change
+  several players in succession; it stays open after every selection and also
+  provides `Start All`, `Stop All`, and `Scatter`
 - `Players / 单独角色` — independently enable or disable Messi, Enzo, Romero,
-  Lisandro, or Paredes
+  Lisandro, or Paredes from the compact legacy submenu
 - `Language / 语言` — choose `中文` or `Español`
 - `Pause / Resume` — pause or resume movement
 - `Manual Controller…` — select one character and control it
@@ -119,7 +123,7 @@ The macOS implementation includes:
 
 - Core tests for the five-player roster and the shared 11-row animation protocol
 - An integration self-test for the master switch, individual player switch,
-  manual control, play action, and menu structure
+  persistent dashboard, manual control, play action, and menu structure
 - App bundle, signature, property-list, ZIP, and universal-binary checks
 
 Run the integration self-test after building:
@@ -147,6 +151,7 @@ likeness, visual asset, trade dress, trademark, or other third-party right.
 
 macOS 版本是原生菜单栏应用，Windows 版本是原生托盘应用。两个版本均保留五个
 桌宠、`Start 5 Pets` 一键总开关、五名球员分别开关、右键完整菜单、手动控制、
-暂停、散开、窗口避障及中西双语气泡。
+暂停、散开、窗口避障及中西双语气泡。macOS 还提供常驻的 `Pet Dashboard`
+角色面板，可连续切换多名球员，不会在每次点击后自动关闭。
 
 公开、转载、修改或分发前请阅读 [LEGAL.md](LEGAL.md)。
